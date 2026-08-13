@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Registration Automation Suite" verbose="1">
+    <listeners>
+        <listener class-name="com.qa.listeners.AnnotationTransformer"/>
+    </listeners>
+    <test name="Rahul Shetty Academy - Register Users">
+        <classes>
+            <class name="com.qa.runners.TestRunner"/>
+        </classes>
+    </test>
+</suite>
