@@ -38,6 +38,14 @@ public class RegistrationSteps {
         ExcelUtils excelUtils = new ExcelUtils(ConfigReader.getExcelPath(), "UserData");
         userData = excelUtils.getUserData(testCaseId);
 
+     // The demo site persists registered accounts across runs and rejects a repeat
+        // registration with the same email (silently - no redirect/success banner, which
+        // isRegistrationSuccessful() then correctly reads as a failure). Excel keeps the
+        // human-readable base email; we append a per-run timestamp so every execution
+        // registers a fresh, never-seen-before address.
+        String uniqueEmail = makeEmailUnique(userData.get("Email"));
+        userData.put("Email", uniqueEmail);
+        
         registerPage.fillRegistrationForm(
                 userData.get("FirstName"),
                 userData.get("LastName"),
@@ -61,4 +69,27 @@ public class RegistrationSteps {
                 "Registration did not succeed for " + testCaseId
                         + " (email used: " + userData.get("Email") + ")");
     }
+    
+    
+    /**
+     * Inserts a timestamp before the "@" so each run registers a brand-new address,
+     * e.g. pushpa.allu1944@testmail.com -> pushpa.allu1944.1755085123456@testmail.com
+     */
+    private String makeEmailUnique(String baseEmail) {
+        int atIndex = baseEmail.indexOf('@');
+        if (atIndex == -1) {
+            return baseEmail + System.currentTimeMillis();
+        }
+        String localPart = baseEmail.substring(0, atIndex);
+        String domainPart = baseEmail.substring(atIndex);
+        return localPart + "." + System.currentTimeMillis() + domainPart;
+    }  
+    
 }
+
+
+
+
+
+
+
