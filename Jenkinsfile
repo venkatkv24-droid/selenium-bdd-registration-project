@@ -46,6 +46,16 @@ pipeline {
     post {
         always {
             echo "Build finished with status: ${currentBuild.currentResult}"
+        emailext(
+            to: 'venkat.kv24@gmail.com',
+            subject: "Jenkins Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}: ${env.JOB_NAME}",
+            body: """
+                <p>Build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> finished with status: <b>${currentBuild.currentResult}</b></p>
+                <p>View full build online: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+            """,
+            mimeType: 'text/html',
+            attachmentsPattern: 'test-output/**/*.html'
+        )
         }
     }
 }
